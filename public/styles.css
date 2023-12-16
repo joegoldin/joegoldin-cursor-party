@@ -4,7 +4,7 @@
 }
 
 ::highlight(highlight-party) {
-  background: #ff0;
+  background: rgba(52,199,89,0.3);
 }
 
 body {

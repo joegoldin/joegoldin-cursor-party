@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import React from "react";
+import { useShallow } from "zustand/react/shallow";
 import { usePresence } from "./presence-context";
 import * as rangyCore from "rangy";
 import "rangy/lib/rangy-highlighter";
@@ -13,17 +14,19 @@ import Decorator from "./highlights/Decorator";
 const rangy = (rangyCore as any).default;
 
 export default function Highlights() {
-  const { otherUsers, updatePresence } = usePresence((state) => {
-    return {
-      otherUsers: state.otherUsers,
-      updatePresence: state.updatePresence,
-    };
-  });
+  const { otherSelections, updatePresence } = usePresence(
+    useShallow((state) => {
+      return {
+        otherSelections: Array.from(state.otherUsers.values())
+          .filter((user) => user.presence?.selection)
+          .map((user) => user.presence?.selection!),
+        updatePresence: state.updatePresence,
+      };
+    })
+  );
 
   // The current selection, serialized
   const [selection, setSelection] = useState<string | null>(null);
-  // Track other selections
-  const [otherSelections, setOtherSelections] = useState<string[]>([]);
   // Store the nodes that are enabled for highlights
   const [containers, setContainers] = useState<Record<string, Element>>({});
 
@@ -41,17 +44,9 @@ export default function Highlights() {
   }, []);
 
   useEffect(() => {
-    console.log("selection changed", selection);
-    updatePresence({ selection: selection !== null ? selection : undefined });
+    //console.log("selection changed", selection);
+    updatePresence({ selection });
   }, [selection]);
-
-  useEffect(() => {
-    setOtherSelections(
-      Array.from(otherUsers.values())
-        .filter((user) => user.presence?.selection)
-        .map((user) => user.presence?.selection!)
-    );
-  }, [otherUsers]);
 
   return (
     <>

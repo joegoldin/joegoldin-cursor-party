@@ -27,11 +27,11 @@ export default function Decorator({
       if (!containers[checksum]) continue;
       const container = containers[checksum];
       for (const serialized of otherSelection.split("{")[0].split("|")) {
-        console.log("deserializing", serialized, "in container", container);
+        //console.log("deserializing", serialized, "in container", container);
         ranges.push(rangy.deserializeRange(serialized, container));
       }
     }
-    console.log("will decorate", ranges);
+    //console.log("will decorate", ranges);
 
     // @ts-ignore
     CSS.highlights.clear();
