@@ -11,6 +11,8 @@ import "rangy/lib/rangy-selectionsaverestore";
 import Listener from "./highlights/Listener";
 import Decorator from "./highlights/Decorator";
 
+import { getElementChecksum } from "./highlights/rangy";
+
 const rangy = (rangyCore as any).default;
 
 export default function Highlights() {
@@ -35,7 +37,7 @@ export default function Highlights() {
     const enabled = document.querySelectorAll("[data-highlights]");
     const newContainers: Record<string, Element> = {};
     for (const element of enabled) {
-      const checksum: string = rangy.getElementChecksum(element);
+      const checksum: string = getElementChecksum(element);
       newContainers[checksum] = element;
     }
     //console.log(newContainers);
