@@ -39,23 +39,23 @@ export default function Listener({
     const handleSelectionChange = () => {
       const selection = getSelection();
       if (!selection) {
-        console.log("no selection");
+        //console.log("no selection");
         setSelection(null);
         return;
       }
       if (selection.isCollapsed) {
-        console.log("selection collapsed");
+        //console.log("selection collapsed");
         setSelection(null);
         return;
       }
       const container = getContainer(selection);
       if (!container) {
-        console.log("no container");
+        //console.log("no container");
         setSelection(null);
         return;
       }
       if (!isEntirelyContained(selection, container)) {
-        console.log("selection not contained");
+        //console.log("selection not contained");
         setSelection(null);
         return;
       }
@@ -65,7 +65,7 @@ export default function Listener({
         container
       );
       setSelection(serialized);
-      console.log("selection changed", serialized);
+      //console.log("selection changed", serialized);
     };
     document.addEventListener("selectionchange", handleSelectionChange);
 
