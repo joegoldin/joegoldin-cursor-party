@@ -1,6 +1,7 @@
 /*
 
-Stripped-down and adapted Rangy library
+Stripped-down and adapted Rangy library, using Web API where possible
+instead of wrapped Rangy objects
 
 Original: https://github.com/timdown/rangy/ (MIT license)
 
@@ -229,7 +230,7 @@ function getNodeIndex(node: Node) {
   return i;
 }
 
-export function isAncestorOf(
+function isAncestorOf(
   ancestor: Node,
   descendant: Node,
   selfIsAncestor: boolean = false
@@ -245,7 +246,7 @@ export function isAncestorOf(
   return false;
 }
 
-function isOrIsAncestorOf(ancestor: Node, descendant: Node) {
+export function isOrIsAncestorOf(ancestor: Node, descendant: Node) {
   return isAncestorOf(ancestor, descendant, true);
 }
 
@@ -263,6 +264,7 @@ function serializePosition(node: Node, offset: number, rootNode: Node) {
 function serializeRange(range: Range, omitChecksum: boolean, rootNode: Node) {
   rootNode = rootNode || range.startContainer.ownerDocument;
   if (!isOrIsAncestorOf(rootNode, range.commonAncestorContainer)) {
+    console.log("THROW");
     throw (
       "serializeRange(): range " +
       range +
