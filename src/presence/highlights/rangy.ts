@@ -138,7 +138,7 @@ function DomPosition(node: Node, offset: number) {
 function deserializePosition(
   serialized: string,
   rootNode: Node,
-  doc: Document
+  doc?: Document | null
 ) {
   if (!rootNode) {
     rootNode = (doc || document).documentElement;
@@ -207,4 +207,89 @@ export function deserializeRange(
   range.setStart(start.node, start.offset);
   range.setEnd(end.node, end.offset);
   return range;
+}
+
+// Related to serializing
+
+export function getAllRangesForSelection(selection: Selection) {
+  var ranges = [];
+  for (var i = 0, len = selection.rangeCount; i < len; ++i) {
+    ranges[i] = selection.getRangeAt(i);
+  }
+  return ranges;
+}
+
+function getNodeIndex(node: Node) {
+  var i = 0;
+  while (true) {
+    if (!node.previousSibling) break;
+    node = node.previousSibling;
+    ++i;
+  }
+  return i;
+}
+
+export function isAncestorOf(
+  ancestor: Node,
+  descendant: Node,
+  selfIsAncestor: boolean = false
+) {
+  var n = selfIsAncestor ? descendant : descendant.parentNode;
+  while (n) {
+    if (n === ancestor) {
+      return true;
+    } else {
+      n = n.parentNode;
+    }
+  }
+  return false;
+}
+
+function isOrIsAncestorOf(ancestor: Node, descendant: Node) {
+  return isAncestorOf(ancestor, descendant, true);
+}
+
+function serializePosition(node: Node, offset: number, rootNode: Node) {
+  var pathParts = [];
+  var n = node;
+  var rootNode = rootNode || node.ownerDocument;
+  while (n && n != rootNode) {
+    pathParts.push(getNodeIndex(n));
+    n = n.parentNode!;
+  }
+  return pathParts.join("/") + ":" + offset;
+}
+
+function serializeRange(range: Range, omitChecksum: boolean, rootNode: Node) {
+  rootNode = rootNode || range.startContainer.ownerDocument;
+  if (!isOrIsAncestorOf(rootNode, range.commonAncestorContainer)) {
+    throw (
+      "serializeRange(): range " +
+      range +
+      " is not wholly contained within specified root node " +
+      rootNode
+    );
+  }
+  var serialized =
+    serializePosition(range.startContainer, range.startOffset, rootNode) +
+    "," +
+    serializePosition(range.endContainer, range.endOffset, rootNode);
+  if (!omitChecksum) {
+    serialized += "{" + getElementChecksum(rootNode) + "}";
+  }
+  return serialized;
+}
+
+export function serializeSelection(
+  selection: Selection,
+  omitChecksum: boolean,
+  rootNode: Node
+) {
+  //selection = api.getSelection(selection);
+  var ranges = getAllRangesForSelection(selection);
+  var serializedRanges = [];
+  for (var i = 0, len = ranges.length; i < len; ++i) {
+    serializedRanges[i] = serializeRange(ranges[i], omitChecksum, rootNode);
+  }
+  return serializedRanges.join("|");
 }

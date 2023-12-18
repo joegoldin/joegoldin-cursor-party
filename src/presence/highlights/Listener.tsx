@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-import * as rangyCore from "rangy";
-import "rangy/lib/rangy-highlighter";
-import "rangy/lib/rangy-classapplier";
-import "rangy/lib/rangy-textrange";
-import "rangy/lib/rangy-serializer";
-import "rangy/lib/rangy-selectionsaverestore";
+import { useEffect } from "react";
 
-const rangy = (rangyCore as any).default;
+import {
+  getAllRangesForSelection,
+  isAncestorOf,
+  serializeSelection,
+} from "./rangy";
 
 export default function Listener({
   containers,
@@ -15,10 +13,10 @@ export default function Listener({
   containers: Record<string, Element>;
   setSelection: (selection: string | null) => void;
 }) {
-  const getContainer = (selection: RangySelection) => {
-    for (const range of selection.getAllRanges()) {
+  const getContainer = (selection: Selection) => {
+    for (const range of getAllRangesForSelection(selection)) {
       for (const element of Object.values(containers)) {
-        if (rangy.dom.isAncestorOf(element, range.commonAncestorContainer)) {
+        if (isAncestorOf(element, range.commonAncestorContainer)) {
           return element;
         }
       }
@@ -26,9 +24,9 @@ export default function Listener({
     return null;
   };
 
-  const isEntirelyContained = (selection: RangySelection, element: Element) => {
-    for (const range of selection.getAllRanges()) {
-      if (!rangy.dom.isAncestorOf(element, range.commonAncestorContainer)) {
+  const isEntirelyContained = (selection: Selection, element: Element) => {
+    for (const range of getAllRangesForSelection(selection)) {
+      if (!isAncestorOf(element, range.commonAncestorContainer)) {
         return false;
       }
     }
@@ -39,8 +37,11 @@ export default function Listener({
     if (Object.keys(containers).length === 0) return;
 
     const handleSelectionChange = () => {
-      // @ts-ignore
-      const selection = rangy.getSelection();
+      const selection = getSelection();
+      if (!selection) {
+        setSelection(null);
+        return;
+      }
       if (selection.isCollapsed) {
         setSelection(null);
         return;
@@ -50,9 +51,9 @@ export default function Listener({
         setSelection(null);
         return;
       }
-      const serialized = rangy.serializeSelection(
+      const serialized = serializeSelection(
         selection,
-        false, // omit the container element
+        false, // include checksum
         container
       );
       setSelection(serialized);

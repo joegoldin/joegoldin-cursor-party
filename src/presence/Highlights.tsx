@@ -2,18 +2,10 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useShallow } from "zustand/react/shallow";
 import { usePresence } from "./presence-context";
-import * as rangyCore from "rangy";
-import "rangy/lib/rangy-highlighter";
-import "rangy/lib/rangy-classapplier";
-import "rangy/lib/rangy-textrange";
-import "rangy/lib/rangy-serializer";
-import "rangy/lib/rangy-selectionsaverestore";
 import Listener from "./highlights/Listener";
 import Decorator from "./highlights/Decorator";
 
 import { getElementChecksum } from "./highlights/rangy";
-
-const rangy = (rangyCore as any).default;
 
 export default function Highlights() {
   const { otherSelections, updatePresence } = usePresence(
@@ -42,7 +34,6 @@ export default function Highlights() {
     }
     //console.log(newContainers);
     setContainers(newContainers);
-    (document as any).rangy = rangy;
   }, []);
 
   useEffect(() => {
