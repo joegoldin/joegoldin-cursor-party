@@ -125,7 +125,86 @@ function nodeToInfoString(node: Node, infoParts: string[] = []) {
 // attributes and comments and includes child node counts. This is done instead of using innerHTML to work around
 // IE <= 8's policy of including element properties in attributes, which ruins things by changing an element's
 // innerHTML whenever the user changes an input within the element.
-export function getElementChecksum(el: Element): string {
+export function getElementChecksum(el: Node): string {
   var info = nodeToInfoString(el).join("");
   return crc32(info).toString(16);
+}
+
+// Functions related to deserializing follow
+
+function DomPosition(node: Node, offset: number) {
+  return { node, offset };
+}
+function deserializePosition(
+  serialized: string,
+  rootNode: Node,
+  doc: Document
+) {
+  if (!rootNode) {
+    rootNode = (doc || document).documentElement;
+  }
+  var parts = serialized.split(":");
+  var node = rootNode;
+  var nodeIndices = parts[0] ? parts[0].split("/") : [],
+    i = nodeIndices.length,
+    nodeIndex;
+
+  while (i--) {
+    nodeIndex = parseInt(nodeIndices[i], 10);
+    if (nodeIndex < node.childNodes.length) {
+      node = node.childNodes[nodeIndex];
+    } else {
+      throw (
+        "deserializePosition() failed: node " +
+        node +
+        " has no child with index " +
+        nodeIndex +
+        ", " +
+        i
+      );
+    }
+  }
+
+  return DomPosition(node, parseInt(parts[1], 10));
+}
+
+var deserializeRegex = /^([^,]+),([^,\{]+)(\{([^}]+)\})?$/;
+
+export function deserializeRange(
+  serialized: string,
+  rootNode: Node,
+  doc?: Document | null
+) {
+  if (rootNode) {
+    //doc = doc || dom.getDocument(rootNode);
+    doc = doc || rootNode.ownerDocument;
+  } else {
+    doc = doc || document;
+    rootNode = doc.documentElement;
+  }
+  var result = deserializeRegex.exec(serialized);
+  var checksum = result ? result[4] : null;
+  if (checksum) {
+    var rootNodeChecksum = getElementChecksum(rootNode);
+    if (checksum !== rootNodeChecksum) {
+      throw (
+        "deserializeRange(): checksums of serialized range root node (" +
+        checksum +
+        ") and target root node (" +
+        rootNodeChecksum +
+        ") do not match"
+      );
+    }
+  }
+  if (!result) {
+    throw new Error("deserializeRange(): Error deserializing range");
+  }
+  var start = deserializePosition(result[1], rootNode, doc),
+    end = deserializePosition(result[2], rootNode, doc);
+  //var range = api.createRange(doc);
+  //range.setStartAndEnd(start.node, start.offset, end.node, end.offset);
+  var range = new Range();
+  range.setStart(start.node, start.offset);
+  range.setEnd(end.node, end.offset);
+  return range;
 }

@@ -1,13 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
-import * as rangyCore from "rangy";
-import "rangy/lib/rangy-highlighter";
-import "rangy/lib/rangy-classapplier";
-import "rangy/lib/rangy-textrange";
-import "rangy/lib/rangy-serializer";
-import "rangy/lib/rangy-selectionsaverestore";
 
-const rangy = (rangyCore as any).default;
+import { deserializeRange } from "./rangy";
 
 export default function Decorator({
   containers,
@@ -28,7 +22,7 @@ export default function Decorator({
       const container = containers[checksum];
       for (const serialized of otherSelection.split("{")[0].split("|")) {
         //console.log("deserializing", serialized, "in container", container);
-        ranges.push(rangy.deserializeRange(serialized, container));
+        ranges.push(deserializeRange(serialized, container));
       }
     }
     //console.log("will decorate", ranges);
@@ -36,7 +30,7 @@ export default function Decorator({
     // @ts-ignore
     CSS.highlights.clear();
     // @ts-ignore
-    const highlight = new Highlight(...ranges.map((r) => r.nativeRange));
+    const highlight = new Highlight(...ranges);
     // @ts-ignore
     CSS.highlights.set("highlight-party", highlight);
   }, [otherSelections]);
