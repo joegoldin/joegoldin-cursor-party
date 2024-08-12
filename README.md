@@ -14,7 +14,7 @@ _Why?_
 ## tl;dr
 
 ```console
-$ git clone https://github.com/partykit/cursor-party.git  # this repo
+$ git clone https://github.com/joegoldin/joegoldin-cursor-party.git  # this repo
 $ cd cursor-party
 $ npm install
 $ cp .env.example .env
