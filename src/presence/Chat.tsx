@@ -18,8 +18,7 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "end",
     alignItems: "center",
     gap: "8px",
-    fontFamily:
-      'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    fontFamily: "BerkeleyMono, monospace",
     fontWeight: 320,
   },
   input: {
@@ -88,7 +87,7 @@ export default function Chat() {
       }, 10000);
 
       if (!listening) {
-        if (event.key === "/") {
+        if (event.key === "t") {
           setMessage((prev) => "");
           setListening(true);
         }

@@ -16,7 +16,7 @@ function App() {
       room={pageId}
       presence={{
         name: "Anonymous User",
-        color: "#0000f0",
+        color: "#000000",
       }}
     >
       <Cursors />

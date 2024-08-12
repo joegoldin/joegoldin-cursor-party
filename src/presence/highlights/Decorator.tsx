@@ -27,11 +27,11 @@ export default function Decorator({
     //console.log("will decorate", ranges);
 
     // @ts-ignore
-    // CSS.highlights.clear();
+    CSS.highlights.clear();
     // @ts-ignore
-    // const highlight = new Highlight(...ranges);
+    const highlight = new Highlight(...ranges);
     // @ts-ignore
-    // CSS.highlights.set("highlight-party", highlight);
+    CSS.highlights.set("highlight-party", highlight);
   }, [otherSelections]);
 
   return null;

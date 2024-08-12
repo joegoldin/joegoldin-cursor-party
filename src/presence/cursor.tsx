@@ -78,13 +78,12 @@ export default function Cursor(props: {
             position: "absolute",
             fontSize: "16px",
             fontStyle: "normal",
-            fontFamily:
-              'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+            fontFamily: "BerkeleyMono, monospace",
             color: "white",
             padding: "4px 9px 4px 9px",
             borderRadius: "16px 16px 16px 16px",
             whiteSpace: "nowrap",
-            backgroundColor: "rgba(52,199,89,1)", // or props.fill,
+            backgroundColor: props.fill, // or some static fill,
             top: "17px",
             left: "22px",
           }}

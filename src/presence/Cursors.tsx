@@ -5,7 +5,7 @@ import Chat from "./Chat";
 import Highlights from "./Highlights";
 
 const ENABLE_CHAT = false;
-const ENABLE_HIGHLIGHTS = true;
+const ENABLE_HIGHLIGHTS = false;
 
 export default function Cursors() {
   useCursorTracking("document");
