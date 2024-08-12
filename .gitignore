@@ -94,7 +94,6 @@ web_modules/
 
 # dotenv environment variable files
 
-.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -172,3 +171,12 @@ dist
 public/cursors.js
 public/cursors.js.map
 public/meta.js
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

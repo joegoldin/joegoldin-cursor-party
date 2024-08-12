@@ -11,6 +11,8 @@
     "@preact/compat": "^17.1.2",
     "@types/rangy": "^0.0.38",
     "partysocket": "0.0.17",
+    "preact": "^10.23.1",
+    "zod": "^3.23.8",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
