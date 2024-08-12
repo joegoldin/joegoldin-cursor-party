@@ -4,7 +4,7 @@ import OtherCursors from "./other-cursors";
 import Chat from "./Chat";
 import Highlights from "./Highlights";
 
-const ENABLE_CHAT = true;
+const ENABLE_CHAT = false;
 const ENABLE_HIGHLIGHTS = true;
 
 export default function Cursors() {
